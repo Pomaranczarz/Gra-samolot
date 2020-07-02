@@ -9,6 +9,14 @@
 
 using namespace sf;
 
+/*	
+	GAME CONCEPT:
+
+	You have to fly down the river and shoot ships. You have to gather fuel from barrels.
+	Each 10 killed enemies you gain level and game gets faster and river gets thinner.
+*/
+
+
 class PlaneGame
 {
 	private:
@@ -17,6 +25,7 @@ class PlaneGame
 		VideoMode videoMode;
 		Event evt;
 		bool isEnd;
+		double lvl;
 
 		//Game properties:
 		//Texturs:
@@ -28,6 +37,7 @@ class PlaneGame
 		Text hpText;
 		Text fuelText;
 		Text pointsText;
+		Text lvlText;
 		Font font;
 
 		//Player:
@@ -58,6 +68,8 @@ class PlaneGame
 
 		//River:
 		int maxRivs;
+		float riverDelay;
+		float maxRiverDelay;
 		RectangleShape river;
 		std::vector<RectangleShape> rivs;
 
@@ -158,7 +170,15 @@ class PlaneGame
 		void renderBullets(RenderTarget& window) { for (auto i : this->bullets) window.draw(i); }
 
 		//Rendering text:
-		void renderText(RenderTarget& window) { window.draw(this->hpText); window.draw(this->fuelText); window.draw(this->pointsText); }
+		void renderText(RenderTarget& window)
+		{ 
+			window.draw(this->hpText); 
+			window.draw(this->fuelText);
+			window.draw(this->pointsText); 
+			window.draw(this->lvlText);
+		}
+
+		void lvlUp() { if (this->points % 10 == 0 && this->points != 0) { this->lvl++; this->points++; } }
 
 	public:
 		//Setting game:
@@ -173,6 +193,7 @@ class PlaneGame
 			this->events();
 			if (this->ifWorks())
 			{
+				this->lvlUp();
 				this->planeMovement();
 				this->fuel -= 0.025;
 				this->updateMovables();
@@ -182,6 +203,7 @@ class PlaneGame
 
 			if (this->hp <= 0 || this->fuel <= 0)
 				this->isEnd = true;
+
 		}
 
 		//Everything:
