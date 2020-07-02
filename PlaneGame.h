@@ -25,7 +25,6 @@ class PlaneGame
 		VideoMode videoMode;
 		Event evt;
 		bool isEnd;
-		double lvl;
 
 		//Game properties:
 		//Texturs:
@@ -46,6 +45,7 @@ class PlaneGame
 		float maxFuel;
 		bool isShot;
 		int points;
+		double lvl;
 		Sprite player;
 
 		//Oil barrels:
@@ -149,7 +149,10 @@ class PlaneGame
 
 		//Updating text:
 		void updateText();
-
+	
+		//Leveling up:
+		void lvlUp() { if (this->points % 10 == 0 && this->points != 0) { this->lvl++; this->points++; } }
+	
 		//Render ======================================================================================================================
 		//Player:
 		void renderPlayer(RenderTarget& window) { window.draw(this->player); }
@@ -177,8 +180,6 @@ class PlaneGame
 			window.draw(this->pointsText); 
 			window.draw(this->lvlText);
 		}
-
-		void lvlUp() { if (this->points % 10 == 0 && this->points != 0) { this->lvl++; this->points++; } }
 
 	public:
 		//Setting game:
