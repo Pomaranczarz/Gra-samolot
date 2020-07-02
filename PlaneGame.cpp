@@ -18,6 +18,7 @@ void PlaneGame::setGame()
 	this->maxBullets = 30;
 	this->isShot = false;
 	this->points = 0;
+	this->lvl = 1;
 }
 
 void PlaneGame::setText()
@@ -38,6 +39,11 @@ void PlaneGame::setText()
 	this->pointsText.setCharacterSize(15);
 	this->pointsText.setString("Sample points text");
 	this->pointsText.setPosition(230.f, 10.f);
+
+	this->lvlText.setFont(this->font);
+	this->lvlText.setCharacterSize(15);
+	this->lvlText.setString("Sample lvl text");
+	this->lvlText.setPosition(340.f, 10.f);
 }
 
 void PlaneGame::renderWindow()
@@ -77,7 +83,7 @@ void PlaneGame::setBars()
 void PlaneGame::setRiver()
 {
 	this->river.setFillColor(Color::Color(100, 149, 237));
-	this->river.setSize(Vector2f(this->window->getSize().x - 300.f, this->window->getSize().y));
+	this->river.setSize(Vector2f(this->window->getSize().x - 200.f, this->window->getSize().y));
 	this->river.setPosition(170.f, 0.f);
 }
 
@@ -170,6 +176,11 @@ void PlaneGame::updateMovables()
 	//Spawning river:
 	if (this->rivs.size() < this->maxRivs)
 	{
+		if (this->points % 20 == 0)
+		{
+			this->river.setSize(Vector2f(this->river.getSize().x - this->lvl*100, this->river.getSize().y));
+			this->points++;
+		}
 		this->addRiver();
 	}
 
@@ -188,7 +199,7 @@ void PlaneGame::updateMovables()
 	//Player - ships:
 	for (size_t i = 0; i < this->ships.size(); i++)
 	{
-		this->ships[i].move(0.f, -2.f);
+		this->ships[i].move(0.f, -0.5f - this->lvl/5);
 		if (this->ships[i].getPosition().y < 0)
 			this->ships.erase(this->ships.begin() + i);
 		else if (this->ships[i].getGlobalBounds().intersects(this->player.getGlobalBounds()))
@@ -201,7 +212,7 @@ void PlaneGame::updateMovables()
 	//Player - barrels:
 	for (size_t i = 0; i < this->barrels.size(); i++)
 	{
-		this->barrels[i].move(0.f, -2.f);
+		this->barrels[i].move(0.f, -0.5f - this->lvl/5);
 		if (this->barrels[i].getPosition().y < 0)
 			this->barrels.erase(this->barrels.begin() + i);
 		else if (this->barrels[i].getGlobalBounds().intersects(this->player.getGlobalBounds()))
@@ -217,7 +228,7 @@ void PlaneGame::updateMovables()
 	//Player - river:
 	for (size_t i = 0; i < this->rivs.size(); i++)
 	{
-		this->rivs[i].move(0.f, -2.f);
+		this->rivs[i].move(0.f, -0.5f - this->lvl/5);
 		if (this->rivs[i].getGlobalBounds().intersects(this->player.getGlobalBounds()))
 		{
 			if (this->player.getPosition().x + this->player.getGlobalBounds().width / 2 < this->rivs[i].getPosition().x ||
@@ -245,7 +256,7 @@ void PlaneGame::updateMovables()
 	//Checking bullets' collisions:
 	for (size_t i = 0; i < this->bullets.size(); i++)
 	{
-		this->bullets[i].move(0.f, 5.f);
+		this->bullets[i].move(0.f, 6.f);
 
 		if (this->bullets[i].getPosition().y > this->window->getSize().y)
 			this->bullets.erase(this->bullets.begin() + i);
@@ -273,5 +284,6 @@ void PlaneGame::updateText()
 	this->hpText.setString("HP: " + std::to_string(this->hp));
 	this->fuelText.setString("Fuel: " + std::to_string(int(std::ceil(this->fuel))));
 	this->pointsText.setString("Points: " + std::to_string(this->points));
+	this->lvlText.setString("Level: " + std::to_string(int(this->lvl)));
 }
 
